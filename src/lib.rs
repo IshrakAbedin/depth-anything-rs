@@ -30,8 +30,13 @@ pub fn run_depth_anything(args: Args) -> Result<(), anyhow::Error> {
     );
 
     // Create estimator and run inference
-    let mut estimator =
-        DepthEstimator::new(model_config, args.threads, args.use_cuda, args.use_tensorrt)?;
+    let mut estimator = DepthEstimator::new(
+        model_config,
+        args.threads,
+        args.use_cuda,
+        args.use_tensorrt,
+        args.use_directml,
+    )?;
     let depth_map = estimator.estimate_depth(&rgb8)?;
 
     // Post-process output

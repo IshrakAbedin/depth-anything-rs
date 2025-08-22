@@ -8,7 +8,7 @@ A command-line tool to estimate depth maps using [Depth-Anything-V2](https://git
 
 You can simply build the project using `cargo build` for debug mode and `cargo build -r` for release mode.
 
-> It supports optional features for CUDA and TensorRT, but not tested (if you compile with any one of those, consult the *Running* section to learn how to turn on CUDA or TensorRT for inference from the CLI).
+> It supports optional features for CUDA and TensorRT, but not tested (if you compile with any one of those, consult the *Running* section to learn how to turn on CUDA or TensorRT for inference from the CLI). The support for DirectML is lightly tested and found to be working. The DirectML feature also needs to be turned on for inference from the CLI.
 
 However, you need to supply the application with the `ONNX` models of the static and dynamic versions of Depth-Anything-V2 by putting them under the root directory of your project inside the `./models/` folder, or in the residing directory of your executable under the `./models/` folder as `depth_anything_v2_vitb.onnx` (static) and `depth_anything_v2_vitb_dynamic.onnx` (dynamic). If you are using a larger or smaller model, you can edit the paths in the [`model.rs`](./src/model.rs) file.
 
@@ -64,6 +64,9 @@ Options:
       --use-tensorrt
           Try to register TensorRT EP (requires --features tensorrt). If both TRT and CUDA enabled, TensorRT is preferred first, then CUDA as fallback
 
+      --use-directml
+          Try to register DirectML EP (requires building with --features directml)
+
   -h, --help
           Print help (see a summary with '-h')
 
@@ -74,4 +77,4 @@ Options:
 Only the `--input`/`-i` argument is mandatory. 
 
 ## Note
-> I have let the `ort` crate handle the ONNX Runtime for both CPU and with CUDA/TensorRT acceleration. If it creates problem, you might want to look into how to link your own dynamic libraries for ONNX.
+> I have let the `ort` crate handle the ONNX Runtime for both CPU and with CUDA/TensorRT/DirectML acceleration. If it creates problem, you might want to look into how to link your own dynamic libraries for ONNX.

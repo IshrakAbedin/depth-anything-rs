@@ -21,15 +21,16 @@ impl DepthEstimator {
         threads: usize,
         use_cuda: bool,
         use_tensorrt: bool,
+        use_directml: bool,
     ) -> Result<Self> {
-        let builder = Session::builder()?
+        let mut builder = Session::builder()?
             .with_optimization_level(GraphOptimizationLevel::Level3)?
             .with_intra_threads(threads)?;
 
         // Optional execution providers (feature-gated at compile time)
         #[cfg(feature = "tensorrt")]
         if use_tensorrt {
-            use ort::execution_providers::{ExecutionProvider, TensorRTExecutionProvider};
+            use ort::execution_providers::TensorRTExecutionProvider;
             let trt = TensorRTExecutionProvider::default()
                 .build()
                 .error_on_failure();
@@ -38,16 +39,25 @@ impl DepthEstimator {
 
         #[cfg(feature = "cuda")]
         if use_cuda {
-            use ort::execution_providers::{CUDAExecutionProvider, ExecutionProvider};
+            use ort::execution_providers::CUDAExecutionProvider;
             let cuda = CUDAExecutionProvider::default().build().error_on_failure();
             builder = builder.with_execution_providers([cuda])?;
         }
 
-        #[cfg(not(any(feature = "cuda", feature = "tensorrt")))]
+        #[cfg(feature = "directml")]
+        if use_directml {
+            use ort::execution_providers::DirectMLExecutionProvider;
+            let dml = DirectMLExecutionProvider::default()
+                .build()
+                .error_on_failure();
+            builder = builder.with_execution_providers([dml])?;
+        }
+
+        #[cfg(not(any(feature = "cuda", feature = "tensorrt", feature = "directml")))]
         {
-            if use_cuda || use_tensorrt {
+            if use_cuda || use_tensorrt || use_directml {
                 eprintln!(
-                    "Note: you passed --use-cuda/--use-tensorrt but the binary was not built with those features."
+                    "Note: you passed --use-cuda/--use-tensorrt/--use-directml but the binary was not built with those features."
                 );
             }
         }

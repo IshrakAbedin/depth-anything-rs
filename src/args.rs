@@ -31,6 +31,10 @@ pub struct Args {
     /// TensorRT is preferred first, then CUDA as fallback.
     #[arg(long, default_value_t = false)]
     pub use_tensorrt: bool,
+
+    /// Try to register DirectML EP (requires building with --features directml)
+    #[arg(long, default_value_t = false)]
+    pub use_directml: bool,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
