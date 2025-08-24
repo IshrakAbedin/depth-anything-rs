@@ -36,6 +36,7 @@ pub fn run_depth_anything(args: Args) -> Result<(), anyhow::Error> {
         args.use_cuda,
         args.use_tensorrt,
         args.use_directml,
+        args.device_id
     )?;
     let depth_map = estimator.estimate_depth(&rgb8)?;
 

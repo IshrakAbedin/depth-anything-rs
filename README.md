@@ -67,6 +67,11 @@ Options:
       --use-directml
           Try to register DirectML EP (requires building with --features directml)
 
+  -d, --device-id <DEVICE_ID>
+          Device (GPU) ID to be used with CUDA, TensorRT, or DirectML
+
+          [default: 0]
+
   -h, --help
           Print help (see a summary with '-h')
 

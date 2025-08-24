@@ -35,6 +35,10 @@ pub struct Args {
     /// Try to register DirectML EP (requires building with --features directml)
     #[arg(long, default_value_t = false)]
     pub use_directml: bool,
+
+    /// Device (GPU) ID to be used with CUDA, TensorRT, or DirectML
+    #[arg(short, long, default_value_t = 0)]
+    pub device_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]

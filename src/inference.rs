@@ -22,6 +22,7 @@ impl DepthEstimator {
         use_cuda: bool,
         use_tensorrt: bool,
         use_directml: bool,
+        device_id: i32,
     ) -> Result<Self> {
         let mut builder = Session::builder()?
             .with_optimization_level(GraphOptimizationLevel::Level3)?
@@ -32,6 +33,7 @@ impl DepthEstimator {
         if use_tensorrt {
             use ort::execution_providers::TensorRTExecutionProvider;
             let trt = TensorRTExecutionProvider::default()
+                .with_device_id(device_id)
                 .build()
                 .error_on_failure();
             builder = builder.with_execution_providers([trt])?;
@@ -40,7 +42,10 @@ impl DepthEstimator {
         #[cfg(feature = "cuda")]
         if use_cuda {
             use ort::execution_providers::CUDAExecutionProvider;
-            let cuda = CUDAExecutionProvider::default().build().error_on_failure();
+            let cuda = CUDAExecutionProvider::default()
+                .with_device_id(device_id)
+                .build()
+                .error_on_failure();
             builder = builder.with_execution_providers([cuda])?;
         }
 
@@ -48,6 +53,7 @@ impl DepthEstimator {
         if use_directml {
             use ort::execution_providers::DirectMLExecutionProvider;
             let dml = DirectMLExecutionProvider::default()
+                .with_device_id(device_id)
                 .build()
                 .error_on_failure();
             builder = builder.with_execution_providers([dml])?;
