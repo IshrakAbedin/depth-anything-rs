@@ -20,7 +20,7 @@ pub fn preprocess(rgb8: &RgbImage, size: u32, static_resize: bool) -> Result<Arr
         (nw, nh)
     };
 
-    let resized = image::imageops::resize(rgb8, new_w, new_h, FilterType::CatmullRom);
+    let resized = image::imageops::resize(rgb8, new_w, new_h, FilterType::Lanczos3);
 
     // Convert to CHW float32 and normalize: (x/255 - mean) / std
     // ImageNet stats (from HF DPT processor config for Depth Anything v2)
